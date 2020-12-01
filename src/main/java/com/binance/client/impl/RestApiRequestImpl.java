@@ -604,7 +604,9 @@ class RestApiRequestImpl {
         });
         return request;
     }
-
+    RestApiRequest<Order> postOrder(String symbol, OrderSide side,OrderType orderType,String quantity) {
+        return postOrder(symbol,side,null,orderType,null,quantity,null,null,null,null,null,null);
+    }
     RestApiRequest<Order> postOrder(String symbol, OrderSide side, PositionSide positionSide, OrderType orderType,
             TimeInForce timeInForce, String quantity, String price, String reduceOnly,
             String newClientOrderId, String stopPrice, WorkingType workingType, NewOrderRespType newOrderRespType) {
@@ -612,17 +614,34 @@ class RestApiRequestImpl {
         UrlParamsBuilder builder = UrlParamsBuilder.build()
                 .putToUrl("symbol", symbol)
                 .putToUrl("side", side)
-                .putToUrl("positionSide", positionSide)
-                .putToUrl("type", orderType)
-                .putToUrl("timeInForce", timeInForce)
-                .putToUrl("quantity", quantity)
-                .putToUrl("price", price)
-                .putToUrl("reduceOnly", reduceOnly)
-                .putToUrl("newClientOrderId", newClientOrderId)
-                .putToUrl("stopPrice", stopPrice)
-                .putToUrl("workingType", workingType)
-                .putToUrl("newOrderRespType", newOrderRespType);
-
+                .putToUrl("type", orderType).putToUrl("quantity", quantity);
+        if(positionSide!=null){
+                builder.putToUrl("positionSide", positionSide);
+        }
+        if(timeInForce!=null){
+            builder.putToUrl("timeInForce", timeInForce);
+        }
+        if(price!=null){
+            builder.putToUrl("price", price);
+        }
+        if(price!=null){
+            builder.putToUrl("price", price);
+        }
+        if(reduceOnly!=null){
+            builder.putToUrl("reduceOnly", reduceOnly);
+        }
+        if(newClientOrderId!=null){
+            builder.putToUrl("newClientOrderId", newClientOrderId);
+        }
+        if(stopPrice!=null){
+            builder.putToUrl("stopPrice", stopPrice);
+        }
+        if(workingType!=null){
+            builder.putToUrl("workingType", workingType);
+        }
+        if(newOrderRespType!=null){
+            builder.putToUrl("newOrderRespType", newOrderRespType);
+        }
         request.request = createRequestByPostWithSignature("/fapi/v1/order", builder);
 
         request.jsonParser = (jsonWrapper -> {
@@ -1072,7 +1091,7 @@ class RestApiRequestImpl {
         return request;
     }
 
-    RestApiRequest<List<MyTrade>> getAccountTrades(String symbol, Long startTime, Long endTime, 
+    RestApiRequest<List<MyTrade>> getAccountTrades(String symbol, Long startTime, Long endTime,
             Long fromId, Integer limit) {
         RestApiRequest<List<MyTrade>> request = new RestApiRequest<>();
         UrlParamsBuilder builder = UrlParamsBuilder.build()
@@ -1110,7 +1129,7 @@ class RestApiRequestImpl {
         return request;
     }
 
-    RestApiRequest<List<Income>> getIncomeHistory(String symbol, IncomeType incomeType, Long startTime, Long endTime, 
+    RestApiRequest<List<Income>> getIncomeHistory(String symbol, IncomeType incomeType, Long startTime, Long endTime,
             Integer limit) {
         RestApiRequest<List<Income>> request = new RestApiRequest<>();
         UrlParamsBuilder builder = UrlParamsBuilder.build()
@@ -1187,8 +1206,8 @@ class RestApiRequestImpl {
                 .putToUrl("startTime", startTime)
                 .putToUrl("endTime", endTime)
                 .putToUrl("limit", limit);
-        
-        
+
+
 //        request.request = createRequestByGetWithSignature("/gateway-api//v1/public/future/data/openInterestHist", builder);
         request.request = createRequestByGetWithSignature("/futures/data/openInterestHist", builder);
 
