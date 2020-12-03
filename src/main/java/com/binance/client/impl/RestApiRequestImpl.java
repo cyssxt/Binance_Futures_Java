@@ -1059,9 +1059,11 @@ class RestApiRequestImpl {
         return request;
     }
 
-    RestApiRequest<List<PositionRisk>> getPositionRisk() {
+    RestApiRequest<List<PositionRisk>> getPositionRisk(String symbol) {
         RestApiRequest<List<PositionRisk>> request = new RestApiRequest<>();
         UrlParamsBuilder builder = UrlParamsBuilder.build();
+        builder.putToUrl("symbol",symbol);
+        builder.putToUrl("timestamp",System.currentTimeMillis());
         request.request = createRequestByGetWithSignature("/fapi/v1/positionRisk", builder);
 
         request.jsonParser = (jsonWrapper -> {
