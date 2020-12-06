@@ -29,8 +29,8 @@ public class SyncRequestImpl implements SyncRequestClient {
     }
 
     @Override
-    public List<Trade> getRecentTrades(String symbol, Integer limit) {
-        return RestApiInvoker.callSync(requestImpl.getRecentTrades(symbol, limit));
+    public List<Trade> getRecentTrades(String symbol, Integer limit,boolean uFlag) {
+        return RestApiInvoker.callSync(requestImpl.getRecentTrades(symbol, limit,uFlag));
     }
 
     @Override
@@ -46,8 +46,8 @@ public class SyncRequestImpl implements SyncRequestClient {
 
     @Override
     public List<Candlestick> getCandlestick(String symbol, CandlestickInterval interval, Long startTime,
-            Long endTime, Integer limit) {
-        return RestApiInvoker.callSync(requestImpl.getCandlestick(symbol, interval, startTime, endTime, limit));
+            Long endTime, Integer limit,boolean uFlag) {
+        return RestApiInvoker.callSync(requestImpl.getCandlestick(symbol, interval, startTime, endTime, limit,uFlag));
     }
 
     @Override
@@ -85,17 +85,22 @@ public class SyncRequestImpl implements SyncRequestClient {
         return RestApiInvoker.callSync(requestImpl.postBatchOrders(batchOrders));
     }
     @Override
-    public Order postOrder(String symbol, OrderSide side,OrderType orderType,String quantity) {
-        return RestApiInvoker.callSync(requestImpl.postOrder(symbol, side,orderType,quantity));
+    public Order postOrder(String symbol, OrderSide side,String quantity,String price,boolean uFlag) {
+        return RestApiInvoker.callSync(requestImpl.postOrder(symbol, side, quantity, price, uFlag) );
+    }
+
+    @Override
+    public Order postOrder(String symbol, OrderSide side,OrderType orderType,String quantity,boolean uFlag) {
+        return RestApiInvoker.callSync(requestImpl.postOrder(symbol, side,orderType,quantity,uFlag));
     }
 
     @Override
     public Order postOrder(String symbol, OrderSide side, PositionSide positionSide, OrderType orderType,
             TimeInForce timeInForce, String quantity, String price, String reduceOnly,
-            String newClientOrderId, String stopPrice, WorkingType workingType, NewOrderRespType newOrderRespType) {
+            String newClientOrderId, String stopPrice, WorkingType workingType, NewOrderRespType newOrderRespType,boolean uFlag) {
         return RestApiInvoker.callSync(requestImpl.postOrder(symbol, side, positionSide, orderType,
                 timeInForce, quantity, price, reduceOnly,
-                newClientOrderId, stopPrice, workingType,newOrderRespType));
+                newClientOrderId, stopPrice, workingType,newOrderRespType,uFlag));
     }
 
 
@@ -105,8 +110,8 @@ public class SyncRequestImpl implements SyncRequestClient {
     }
 
     @Override
-    public ResponseResult cancelAllOpenOrder(String symbol) {
-      return RestApiInvoker.callSync(requestImpl.cancelAllOpenOrder(symbol));
+    public ResponseResult cancelAllOpenOrder(String symbol,boolean uFlag) {
+      return RestApiInvoker.callSync(requestImpl.cancelAllOpenOrder(symbol,uFlag));
     }
 
     @Override
@@ -146,8 +151,8 @@ public class SyncRequestImpl implements SyncRequestClient {
     }
 
     @Override
-    public List<Order> getOpenOrders(String symbol) {
-        return RestApiInvoker.callSync(requestImpl.getOpenOrders(symbol));
+    public List<Order> getOpenOrders(String symbol,boolean uFlag) {
+        return RestApiInvoker.callSync(requestImpl.getOpenOrders(symbol,uFlag));
     }
 
     @Override
@@ -168,6 +173,11 @@ public class SyncRequestImpl implements SyncRequestClient {
     @Override
     public Leverage changeInitialLeverage(String symbol, Integer leverage) {
         return RestApiInvoker.callSync(requestImpl.changeInitialLeverage(symbol, leverage));
+    }
+
+    @Override
+    public List<PositionRisk> getPositionRisk() {
+        return RestApiInvoker.callSync(requestImpl.getDPositionRisk());
     }
 
     @Override

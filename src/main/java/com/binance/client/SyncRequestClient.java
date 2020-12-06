@@ -2,6 +2,7 @@ package com.binance.client;
 
 import com.alibaba.fastjson.JSONObject;
 import com.binance.client.impl.BinanceApiInternalFactory;
+import com.binance.client.impl.RestApiRequest;
 import com.binance.client.model.ResponseResult;
 import com.binance.client.model.market.*;
 import com.binance.client.model.enums.*;
@@ -74,7 +75,7 @@ public interface SyncRequestClient {
      *
      * @return Recent trades.
      */
-    List<Trade> getRecentTrades(String symbol, Integer limit);
+    List<Trade> getRecentTrades(String symbol, Integer limit,boolean uFlag);
 
     /**
      * Get old Trade.
@@ -95,7 +96,7 @@ public interface SyncRequestClient {
      *
      * @return Kline/candlestick bars for a symbol.
      */
-    List<Candlestick> getCandlestick(String symbol, CandlestickInterval interval, Long startTime, Long endTime, Integer limit);
+    List<Candlestick> getCandlestick(String symbol, CandlestickInterval interval, Long startTime, Long endTime, Integer limit,boolean uFlag);
 
     /**
      * Get mark price for a symbol.
@@ -146,8 +147,8 @@ public interface SyncRequestClient {
      */
     List<Object> postBatchOrders(String batchOrders);
 
-
-    Order postOrder(String symbol, OrderSide side,OrderType orderType,String quantity);
+    Order postOrder(String symbol, OrderSide side,String quantity,String price,boolean uFlag);
+    Order postOrder(String symbol, OrderSide side,OrderType orderType,String quantity,boolean uFlag);
     /**
      * Send in a new order.
      *
@@ -155,7 +156,7 @@ public interface SyncRequestClient {
      */
     Order postOrder(String symbol, OrderSide side, PositionSide positionSide, OrderType orderType,
             TimeInForce timeInForce, String quantity, String price, String reduceOnly,
-            String newClientOrderId, String stopPrice, WorkingType workingType, NewOrderRespType newOrderRespType);
+            String newClientOrderId, String stopPrice, WorkingType workingType, NewOrderRespType newOrderRespType,boolean uFlag);
 
     /**
      * Cancel an active order.
@@ -169,7 +170,7 @@ public interface SyncRequestClient {
      *
      * @return ResponseResult.
      */
-    ResponseResult cancelAllOpenOrder(String symbol);
+    ResponseResult cancelAllOpenOrder(String symbol,boolean uFlag);
 
     /**
      * Batch cancel orders.
@@ -233,7 +234,7 @@ public interface SyncRequestClient {
      *
      * @return Open orders.
      */
-    List<Order> getOpenOrders(String symbol);
+    List<Order> getOpenOrders(String symbol,boolean uFlag);
 
     /**
      * Get all account orders; active, canceled, or filled.
@@ -262,6 +263,14 @@ public interface SyncRequestClient {
      * @return Leverage.
      */
     Leverage changeInitialLeverage(String symbol, Integer leverage);
+
+
+    /**
+     * Get position.
+     *
+     * @return Position.
+     */
+    List<PositionRisk> getPositionRisk();
 
     /**
      * Get position.

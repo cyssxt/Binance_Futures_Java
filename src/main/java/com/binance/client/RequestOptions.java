@@ -9,6 +9,17 @@ import java.net.URL;
  */
 public class RequestOptions {
 
+    private boolean testNetFlag = false;
+
+    public void setTestNetFlag(boolean testNetFlag) {
+        this.testNetFlag = testNetFlag;
+        this.url = BinanceApiConstants.TESTNET_API_BASE_URL;
+    }
+
+    public RequestOptions(String url) {
+        this.url = url;
+    }
+
     private String url = BinanceApiConstants.API_BASE_URL;
 
     public RequestOptions() {
@@ -23,7 +34,7 @@ public class RequestOptions {
      *
      * @param url The URL name like "https://fapi.binance.com".
      */
-    public void setUrl(String url) {
+    public void setUrl(String url) throws BinanceApiException {
         try {
             URL u = new URL(url);
             this.url = u.toString();

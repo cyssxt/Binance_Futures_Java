@@ -47,7 +47,7 @@ abstract class RestApiInvoker {
         }
     }
 
-    static <T> T callSync(RestApiRequest<T> request) {
+    static <T> T callSync(RestApiRequest<T> request)  {
         try {
             String str;
             log.debug("Request URL " + request.request.url());

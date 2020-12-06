@@ -11,6 +11,7 @@ public class BinanceApiConstants {
      * REST API base URL.
      */
     public static final String API_BASE_URL = "https://fapi.binance.com";
+    public static final String TESTNET_API_BASE_URL = "https://testnet.binancefuture.com";
 
     /**
      * Streaming API base URL.
