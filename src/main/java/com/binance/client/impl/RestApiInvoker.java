@@ -1,5 +1,6 @@
 package com.binance.client.impl;
 
+import com.binance.client.exception.BinanceCodeException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -59,6 +60,9 @@ abstract class RestApiInvoker {
             } else {
                 throw new BinanceApiException(BinanceApiException.ENV_ERROR,
                         "[Invoking] Cannot get the response from server");
+            }
+            if(response.code()!=200){
+                throw new BinanceCodeException();
             }
             log.debug("Response =====> " + str);
             JsonWrapper jsonWrapper = JsonWrapper.parseFromString(str);
