@@ -13,7 +13,13 @@ public class RequestOptions {
 
     public void setTestNetFlag(boolean testNetFlag) {
         this.testNetFlag = testNetFlag;
-        this.url = BinanceApiConstants.TESTNET_API_BASE_URL;
+        if(testNetFlag) {
+            this.url = BinanceApiConstants.TESTNET_API_BASE_URL;
+        }
+    }
+
+    public boolean isTestNetFlag() {
+        return testNetFlag;
     }
 
     public RequestOptions(String url) {
@@ -27,6 +33,7 @@ public class RequestOptions {
 
     public RequestOptions(RequestOptions option) {
         this.url = option.url;
+        this.setTestNetFlag(option.isTestNetFlag());
     }
 
     /**

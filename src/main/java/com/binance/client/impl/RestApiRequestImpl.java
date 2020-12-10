@@ -9,6 +9,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.binance.client.RequestOptions;
+import com.binance.client.constant.BinanceApiConstants;
 import com.binance.client.exception.BinanceApiException;
 import com.binance.client.impl.utils.JsonWrapperArray;
 import com.binance.client.impl.utils.UrlParamsBuilder;
@@ -26,16 +27,25 @@ class RestApiRequestImpl {
     private String secretKey;
     private String serverUrl;
     public final static String BTCUSD_PERP="BTCUSD_PERP";
+    private RequestOptions options;
 
     RestApiRequestImpl(String apiKey, String secretKey, RequestOptions options) {
         this.apiKey = apiKey;
         this.secretKey = secretKey;
         this.serverUrl = options.getUrl();
+        this.options = options;
     }
 
-    private Request createRequestByGet(String address, UrlParamsBuilder builder) {
-        System.out.println(serverUrl);
-        return createRequestByGet(serverUrl, address, builder);
+    public String getServerUrl(boolean uFlag){
+        String url = options.isTestNetFlag()?BinanceApiConstants.TESTNET_API_BASE_URL:(uFlag?BinanceApiConstants.API_BASE_URL:BinanceApiConstants.NU_API_BASE_URL);
+        return  url;
+    }
+
+    private Request createRequestByGet(String address, UrlParamsBuilder builder){
+        return createRequestByGet(address,builder,true);
+    }
+    private Request createRequestByGet(String address, UrlParamsBuilder builder,boolean uFlag) {
+        return createRequestByGet(getServerUrl(uFlag), address, builder);
     }
 
     private Request createRequestByGet(String url, String address, UrlParamsBuilder builder) {
@@ -101,9 +111,14 @@ class RestApiRequestImpl {
                     .build();
         }
     }
-
+    private Request createRequestByPostWithSignature(String address, UrlParamsBuilder builder,boolean uFlag) {
+        return createRequestWithSignature(getServerUrl(uFlag), address, builder.setMethod("POST"));
+    }
     private Request createRequestByPostWithSignature(String address, UrlParamsBuilder builder) {
         return createRequestWithSignature(serverUrl, address, builder.setMethod("POST"));
+    }
+    private Request createRequestByGetWithSignature(String address, UrlParamsBuilder builder,boolean uFlag) {
+        return createRequestWithSignature(getServerUrl(uFlag), address, builder);
     }
 
     private Request createRequestByGetWithSignature(String address, UrlParamsBuilder builder) {
@@ -113,7 +128,9 @@ class RestApiRequestImpl {
     private Request createRequestByPutWithSignature(String address, UrlParamsBuilder builder) {
         return createRequestWithSignature(serverUrl, address, builder.setMethod("PUT"));
     }
-
+    private Request createRequestByDeleteWithSignature(String address, UrlParamsBuilder builder,boolean uFlag) {
+        return createRequestWithSignature(getServerUrl(uFlag), address, builder.setMethod("DELETE"));
+    }
     private Request createRequestByDeleteWithSignature(String address, UrlParamsBuilder builder) {
         return createRequestWithSignature(serverUrl, address, builder.setMethod("DELETE"));
     }
@@ -264,7 +281,7 @@ class RestApiRequestImpl {
         UrlParamsBuilder builder = UrlParamsBuilder.build()
                 .putToUrl("symbol", symbol)
                 .putToUrl("limit", limit);
-        request.request = createRequestByGet(uFlag?"/fapi/v1/trades":"/dapi/v1/trades", builder);
+        request.request = createRequestByGet(uFlag?"/fapi/v1/trades":"/dapi/v1/trades", builder,uFlag);
 
         request.jsonParser = (jsonWrapper -> {
             List<Trade> result = new LinkedList<>();
@@ -354,11 +371,7 @@ class RestApiRequestImpl {
                 .putToUrl("startTime", startTime)
                 .putToUrl("endTime", endTime)
                 .putToUrl("limit", limit);
-        if(uFlag) {
-            request.request = createRequestByGet("/fapi/v1/klines", builder);
-        }else{
-            request.request = createRequestByGet("/dapi/v1/klines", builder);
-        }
+        request.request = createRequestByGet(uFlag?"/fapi/v1/klines":"/dapi/v1/klines", builder,uFlag);
 
         request.jsonParser = (jsonWrapper -> {
             List<Candlestick> result = new LinkedList<>();
@@ -650,7 +663,7 @@ class RestApiRequestImpl {
         if(newOrderRespType!=null){
             builder.putToUrl("newOrderRespType", newOrderRespType);
         }
-        request.request = createRequestByPostWithSignature(uFlag?"/fapi/v1/order":"/dapi/v1/order", builder);
+        request.request = createRequestByPostWithSignature(uFlag?"/fapi/v1/order":"/dapi/v1/order", builder,uFlag);
 
         request.jsonParser = (jsonWrapper -> {
             Order result = new Order();
@@ -804,7 +817,7 @@ class RestApiRequestImpl {
         RestApiRequest<ResponseResult> request = new RestApiRequest<>();
         UrlParamsBuilder builder = UrlParamsBuilder.build()
                 .putToUrl("symbol", symbol);
-        request.request = createRequestByDeleteWithSignature(uFlag?"/fapi/v1/allOpenOrders":"/dapi/v1/allOpenOrders", builder);
+        request.request = createRequestByDeleteWithSignature(uFlag?"/fapi/v1/allOpenOrders":"/dapi/v1/allOpenOrders", builder,uFlag);
 
         request.jsonParser = (jsonWrapper -> {
             ResponseResult responseResult = new ResponseResult();
@@ -900,7 +913,7 @@ class RestApiRequestImpl {
         RestApiRequest<List<Order>> request = new RestApiRequest<>();
         UrlParamsBuilder builder = UrlParamsBuilder.build()
                 .putToUrl("symbol", symbol);
-        request.request = createRequestByGetWithSignature(uFlag?"/fapi/v1/openOrders":"/dapi/v1/openOrders", builder);
+        request.request = createRequestByGetWithSignature(uFlag?"/fapi/v1/openOrders":"/dapi/v1/openOrders", builder,uFlag);
 
         request.jsonParser = (jsonWrapper -> {
             List<Order> result = new LinkedList<>();
@@ -1068,11 +1081,11 @@ class RestApiRequestImpl {
         });
         return request;
     }
-    RestApiRequest<List<PositionRisk>> getDPositionRisk() {
+    RestApiRequest<List<PositionRisk>> getDPositionRisk(boolean uFlag) {
         RestApiRequest<List<PositionRisk>> request = new RestApiRequest<>();
         UrlParamsBuilder builder = UrlParamsBuilder.build();
         builder.putToUrl("timestamp",System.currentTimeMillis());
-        request.request = createRequestByGetWithSignature("/dapi/v1/positionRisk", builder);
+        request.request = createRequestByGetWithSignature("/dapi/v1/positionRisk", builder,false);
 
         request.jsonParser = (jsonWrapper -> {
             List<PositionRisk> result = new LinkedList<>();
@@ -1101,12 +1114,13 @@ class RestApiRequestImpl {
         return request;
     }
 
-    RestApiRequest<List<PositionRisk>> getPositionRisk(String symbol) {
+
+    RestApiRequest<List<PositionRisk>> getPositionRisk(String symbol,boolean uFlag) {
         RestApiRequest<List<PositionRisk>> request = new RestApiRequest<>();
         UrlParamsBuilder builder = UrlParamsBuilder.build();
         builder.putToUrl("symbol",symbol);
         builder.putToUrl("timestamp",System.currentTimeMillis());
-        request.request = createRequestByGetWithSignature("/fapi/v1/positionRisk", builder);
+        request.request = createRequestByGetWithSignature("/fapi/v1/positionRisk", builder,uFlag);
 
         request.jsonParser = (jsonWrapper -> {
             List<PositionRisk> result = new LinkedList<>();

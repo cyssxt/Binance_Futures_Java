@@ -270,14 +270,14 @@ public interface SyncRequestClient {
      *
      * @return Position.
      */
-    List<PositionRisk> getPositionRisk();
+    List<PositionRisk> getPositionRisk(boolean uFlag);
 
     /**
      * Get position.
      *
      * @return Position.
      */
-    List<PositionRisk> getPositionRisk(String symbol);
+    List<PositionRisk> getPositionRisk(String symbol,boolean uFlag);
 
     /**
      * Get trades for a specific account and symbol.

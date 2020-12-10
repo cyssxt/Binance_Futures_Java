@@ -176,13 +176,13 @@ public class SyncRequestImpl implements SyncRequestClient {
     }
 
     @Override
-    public List<PositionRisk> getPositionRisk() {
-        return RestApiInvoker.callSync(requestImpl.getDPositionRisk());
+    public List<PositionRisk> getPositionRisk(boolean uFlag) {
+        return RestApiInvoker.callSync(requestImpl.getDPositionRisk(uFlag));
     }
 
     @Override
-    public List<PositionRisk> getPositionRisk(String symbol) {
-        return RestApiInvoker.callSync(requestImpl.getPositionRisk(symbol));
+    public List<PositionRisk> getPositionRisk(String symbol,boolean uFlag) {
+        return RestApiInvoker.callSync(requestImpl.getPositionRisk(symbol,uFlag));
     }
 
     @Override
