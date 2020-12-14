@@ -626,7 +626,7 @@ class RestApiRequestImpl {
         return request;
     }
     RestApiRequest<Order> postOrder(String symbol, OrderSide side,String quantity,String price,boolean uFlag) {
-        return postOrder(symbol,side,null,OrderType.LIMIT,null,quantity,price,null,null,null,null,null,uFlag);
+        return postOrder(symbol,side,null,OrderType.LIMIT,TimeInForce.GTC,quantity,price,null,null,null,null,null,uFlag);
     }
     RestApiRequest<Order> postOrder(String symbol, OrderSide side,OrderType orderType,String quantity,boolean uFlag) {
         return postOrder(symbol,side,null,orderType,null,quantity,null,null,null,null,null,null,uFlag);

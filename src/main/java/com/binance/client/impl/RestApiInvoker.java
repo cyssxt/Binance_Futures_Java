@@ -61,6 +61,8 @@ abstract class RestApiInvoker {
                 throw new BinanceApiException(BinanceApiException.ENV_ERROR,
                         "[Invoking] Cannot get the response from server");
             }
+
+            log.debug("Request URL " + request.request.url()+"======="+str);
             if(response.code()!=200){
                 throw new BinanceCodeException();
             }
