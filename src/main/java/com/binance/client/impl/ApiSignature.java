@@ -22,7 +22,8 @@ class ApiSignature {
             throw new BinanceApiException(BinanceApiException.KEY_MISSING, "API key and secret key are required");
         }
 
-        builder.putToUrl("recvWindow", Long.toString(BinanceApiConstants.DEFAULT_RECEIVING_WINDOW))
+        builder
+//                .putToUrl("recvWindow", Long.toString(BinanceApiConstants.DEFAULT_RECEIVING_WINDOW))
                 .putToUrl("timestamp", Long.toString(System.currentTimeMillis()));
 
         Mac hmacSha256;
